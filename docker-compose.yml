@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  banco-desafio:
+    image: postgres:12.6
+    container_name: banco-desafio
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: clientes-db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin1234
+    ports:
+      - "3535:5432"
+    networks:
+          - teste-network
+
+  django:
+        container_name: django
+        restart: unless-stopped
+        environment:
+          DJANGO_SETTINGS_MODULE: 'desafio.settings'
+        build: 
+          context: back_end
+          dockerfile: ../Dockerfile
+    
+        command:  bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+        volumes:
+          - ./back_end:/code
+        ports:
+          - "8000:8000"
+        depends_on:
+          - banco-desafio
+        networks:
+          - teste-network
+
+networks:
+  teste-network:
+    driver: bridge
