@@ -4,8 +4,11 @@ from django.dispatch import receiver
 
 from . import models
 
+@receiver(pre_save, sender=models.Projetos)
+def teste_projeto_pre(sender, instance, **kwargs):
+    print("====================post save signal=============================")
+
 
 @receiver(post_save, sender=models.Projetos)
-def teste_projeto(sender, instance, created, **kwargs):
-    print("====================signal=============================")
-    
+def teste_projeto_post(sender, instance, created, **kwargs):
+    print("====================post save signal=============================")
